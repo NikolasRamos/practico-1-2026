@@ -133,8 +133,7 @@ export function todosAprobaron(alumnos: Alumno[]): boolean {
 // Devolver la cantidad de alumnos aprobados.
 // Resolver utilizando filter y length.
 export function cantidadAprobados(alumnos: Alumno[]): number {
-    // TODO
-    throw new Error("Implementar");
+    return alumnos.filter(alumno => alumno.nota >= 6).length;
 }
 
 // -----------------------------------------------------------------------------
@@ -143,8 +142,7 @@ export function cantidadAprobados(alumnos: Alumno[]): number {
 // Calcular la suma de las edades de todos los alumnos.
 // Resolver utilizando reduce.
 export function sumarEdades(alumnos: Alumno[]): number {
-    // TODO
-    throw new Error("Implementar");
+    return alumnos.reduce((total, alumno) => total + alumno.edad, 0);
 }
 
 // -----------------------------------------------------------------------------
@@ -155,8 +153,7 @@ export function obtenerAlumnosDeCiudad(
     alumnos: Alumno[],
     ciudad: string
 ): Alumno[] {
-    // TODO
-    throw new Error("Implementar");
+    return alumnos.filter(alumno => alumno.ciudad === ciudad);
 }
 
 // -----------------------------------------------------------------------------
@@ -170,8 +167,7 @@ export function calcularPromedioPorCiudad(
     alumnos: Alumno[],
     ciudad: string
 ): number {
-    // TODO
-    throw new Error("Implementar");
+    return calcularPromedio(obtenerAlumnosDeCiudad(alumnos, ciudad));
 }
 
 // -----------------------------------------------------------------------------
@@ -187,8 +183,7 @@ export function transformar<T, R>(
     elementos: T[],
     callback: (elemento: T) => R
 ): R[] {
-    // TODO
-    throw new Error("Implementar");
+    return elementos.map(callback);
 }
 
 // -----------------------------------------------------------------------------
@@ -204,8 +199,7 @@ export function filtrar<T>(
     elementos: T[],
     callback: (elemento: T) => boolean
 ): T[] {
-    // TODO
-    throw new Error("Implementar");
+    return elementos.filter(callback);
 }
 
 // -----------------------------------------------------------------------------
@@ -219,8 +213,7 @@ export function buscar<T>(
     elementos: T[],
     callback: (elemento: T) => boolean
 ): T | undefined {
-    // TODO
-    throw new Error("Implementar");
+    return elementos.find(callback);
 }
 
 // -----------------------------------------------------------------------------
@@ -236,8 +229,7 @@ export function calcularTotal(
     alumnos: Alumno[],
     callback: (alumno: Alumno) => number
 ): number {
-    // TODO
-    throw new Error("Implementar");
+    return alumnos.reduce((total, alumno) => total + callback(alumno), 0);
 }
 
 // -----------------------------------------------------------------------------
@@ -258,8 +250,16 @@ export function calcularTotal(
 export function agruparPorCiudad(
     alumnos: Alumno[]
 ): Record<string, Alumno[]> {
-    // TODO
-    throw new Error("Implementar");
+    return alumnos.reduce((acumulador, alumno) => {
+        const ciudad = alumno.ciudad;
+
+        if (!acumulador[ciudad]) {
+            acumulador[ciudad] = [];
+        }
+
+        acumulador[ciudad].push(alumno);
+        return acumulador;
+    }, {} as Record<string, Alumno[]>);
 }
 
 // -----------------------------------------------------------------------------
@@ -285,9 +285,30 @@ export interface Estadisticas {
 export function obtenerEstadisticas(
     alumnos: Alumno[]
 ): Estadisticas {
-    // TODO
-    throw new Error("Implementar");
-}
+    if (alumnos.length === 0) {
+        return {
+            cantidadTotal: 0,
+            cantidadAprobados: 0,
+            cantidadDesaprobados: 0,
+            promedio: 0,
+            mejorAlumno: undefined,
+        };
+    }       
+    const cantidadTotal = alumnos.length;
+    const cantidadAprobados = alumnos.filter(alumno => alumno.nota >= 6).length;
+    const cantidadDesaprobados = cantidadTotal - cantidadAprobados; 
+    const promedio = calcularPromedio(alumnos);
+    const mejorAlumno = obtenerMejorAlumno(alumnos);
+
+    return {
+        cantidadTotal,
+        cantidadAprobados,
+        cantidadDesaprobados,
+        promedio,
+        mejorAlumno,
+    };
+    }
+
 
 // -----------------------------------------------------------------------------
 // PRUEBAS MANUALES
